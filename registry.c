@@ -5,8 +5,8 @@
 #include "qref.h"
 
 static struct  Subcommand *subcommand_head = NULL;
-static size_t subcommand_count = {};
-static size_t total_ref_count  = {};
+static size_t subcommand_count = 0;
+static size_t total_ref_count  = 0;
 
 
 /**
