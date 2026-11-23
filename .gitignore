@@ -1,0 +1,14 @@
+# Compiled Object files
+*.o
+*.obj
+*.lo
+
+# Build directory
+build/
+
+# Editor & OS files
+.vscode/
+.DS_Store
+Thumbs.db
+*~
+*.swp
