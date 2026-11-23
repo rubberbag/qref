@@ -90,7 +90,7 @@ void print_help(void)
     puts("\nOptions:");
     puts("  -h, --help          Show this help message");
     puts("  -v, --version       Show version information");
-    puts("  -g, --global        Force global query. e.g., qref -g \"ascii\"");
+    puts("  -g, --global        Force global query across all topics. e.g., qref -g \"ascii\"");
 
     puts("\nAvailable topics");
     while(curr !=NULL)
