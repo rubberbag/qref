@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
+
 
 
 #include "qref.h"
 
 static bool force_global  = false;
-const struct Subcommand *scope = NULL;
-const char *term = NULL;
+const struct Subcommand *scope = nullptr;
+const char *term = nullptr;
 
 int main(int argc, char ** argv)
 {
@@ -59,7 +59,7 @@ int main(int argc, char ** argv)
             return EXIT_FAILURE;
         }
         term = scope->name;
-        scope = NULL;
+        scope = nullptr;
     }
 
     if (!scope && !term)

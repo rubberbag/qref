@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-#include <stdbool.h>
 #include <ctype.h>
 #include <assert.h>
 
@@ -11,11 +10,11 @@
 #define FNV_OFFEST_BASIS    2166136261u
 #define FNV_PRIME           16777619u      
 /**
- * Compute a 32-bit FNV-la hash for a NULL-terminated string.
+ * Compute a 32-bit FNV-la hash for a null-terminated string.
  */
 static uint32_t hash_str_lower(const char *str)
 {
-    assert (str != NULL);
+    assert (str != nullptr);
 
     uint32_t hash = FNV_OFFEST_BASIS;
 
@@ -29,7 +28,7 @@ static uint32_t hash_str_lower(const char *str)
 }
 
 /**
- * Return true if two NLL-terminated strings match ignoring ascii case.
+ * Return true if two null-terminated strings match ignoring ascii case.
  */
 static bool str_ieq(const char *a, const char *b)
 {
@@ -59,7 +58,7 @@ static bool str_matches(const char *a, const char *b, enum CaseMode mode)
 
 /**
  * Build an exact-sized hash table table on the stack for the givrn scope ( or all
- * registered topics if scope if NULL), preferring exact case matches before
+ * registered topics if scope if nullptr), preferring exact case matches before
  * falling back to case-insensetive matches
  */
 int lookup_and_print( const char *term, const struct Subcommand *scope)
@@ -67,7 +66,7 @@ int lookup_and_print( const char *term, const struct Subcommand *scope)
 
     if (!term)
     {
-        fprintf(stderr,"Error: term can not be null");
+        fprintf(stderr,"Error: term can not be nullptr");
         return EXIT_FAILURE;
     }
 
@@ -98,7 +97,7 @@ int lookup_and_print( const char *term, const struct Subcommand *scope)
     }
     else
     {
-        for (const struct Subcommand *cmd = registry_head(); cmd != NULL; cmd = cmd->next)
+        for (const struct Subcommand *cmd = registry_head(); cmd != nullptr; cmd = cmd->next)
         {
             for (size_t i = 0; i < cmd->count; i++)
             {

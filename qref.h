@@ -57,7 +57,7 @@ void print_qrefs(const struct Qref *const *tems, size_t count, const char *title
             .description = (desc_str),                                \
             .qrefs = (data_arr),                                      \
             .count = sizeof(data_arr) / sizeof((data_arr[0])),        \
-            .next = NULL,                                             \
+            .next = nullptr,                                             \
     };                                                                \
     __attribute__((constructor)) static void _registers_##topic(void) \
     {                                                                 \

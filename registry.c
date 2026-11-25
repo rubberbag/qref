@@ -4,7 +4,7 @@
 
 #include "qref.h"
 
-static struct  Subcommand *subcommand_head = NULL;
+static struct  Subcommand *subcommand_head = nullptr;
 static size_t subcommand_count = 0;
 static size_t total_ref_count  = 0;
 
@@ -26,13 +26,13 @@ void register_topic(struct Subcommand *cmd)
 }
 
 /**
- * Find a registered topic by name, or retun NULL if not found
+ * Find a registered topic by name, or retun nullptr if not found
  */
 const struct Subcommand *find_subcommand(const char *name)
 {
     const struct Subcommand *curr = subcommand_head;
 
-    while (curr != NULL)
+    while (curr != nullptr)
     {
         if (strcmp(curr->name, name) ==0)
         {
@@ -42,7 +42,7 @@ const struct Subcommand *find_subcommand(const char *name)
         curr = curr->next;
     }
     
-    return NULL;
+    return nullptr;
 }
 
 
@@ -93,7 +93,7 @@ void print_help(void)
     puts("  -g, --global        Force global query across all topics. e.g., qref -g \"ascii\"");
 
     puts("\nAvailable topics");
-    while(curr !=NULL)
+    while(curr !=nullptr)
     {
     printf(" %-12s      %28s (%zu entries)\n",
             curr->name, curr->description, curr->count);
@@ -127,12 +127,12 @@ void print_qrefs(const struct Qref *const *items, size_t count, const char *titl
         return;
     }
 
-    const char *last_cat = NULL;
+    const char *last_cat = nullptr;
     for (size_t i = 0; i < count; i++)
     {
         if(!last_cat || strcmp(last_cat, items[i]->category) != 0)
         {
-            if(last_cat != NULL)
+            if(last_cat != nullptr)
             {
                 puts("");
             }
