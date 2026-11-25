@@ -7,8 +7,7 @@
 build/
 
 # Editor & OS files
-.cache/
-compile_commands.json
+.vscode/
 Thumbs.db
 *~
 *.swp
