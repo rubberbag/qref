@@ -15,9 +15,7 @@ static size_t total_ref_count  = 0;
 void register_topic(struct Subcommand *cmd)
 {
     if(!cmd)
-    {
         return;
-    }
 
     cmd->next = subcommand_head;
     subcommand_head = cmd;
@@ -32,8 +30,7 @@ const struct Subcommand *find_subcommand(const char *name)
 {
     const struct Subcommand *curr = subcommand_head;
 
-    while (curr != nullptr)
-    {
+    while (curr != nullptr) {
         if (strcmp(curr->name, name) ==0)
         {
             return curr;
@@ -93,8 +90,7 @@ void print_help(void)
     puts("  -g, --global        Force global query across all topics. e.g., qref -g ascii / qref ascii -g");
 
     puts("\nAvailable topics");
-    while(curr !=nullptr)
-    {
+    while(curr !=nullptr) {
     printf(" %-12s      %28s (%zu entries)\n",
             curr->name, curr->description, curr->count);
         curr = curr->next;
@@ -107,9 +103,7 @@ void print_help(void)
 void print_qrefs(const struct Qref *const *items, size_t count, const char *title)
 {
     if (!items || count == 0)
-    {
         return;
-    }
 
     printf("[+] %s (%zu %s)\n",
             title ? title: "Lookup Result",
@@ -117,35 +111,49 @@ void print_qrefs(const struct Qref *const *items, size_t count, const char *titl
             count == 1 ? "match" : "matches");
     puts("-------------------------------------------------------------");
 
-    if (count == 1)
-    {
+    if (count == 1) {
         printf("ENTRY DETAILS:\n");
-        printf("    Name:           %s\n", items[0]->name);
-        printf("    Category:       %s\n", items[0]->category);
-        printf("    Details:        %s\n", items[0]->details);
+        printf("    [Name]           %s\n", items[0]->name);
+        if (items[0]->aliases[0] != nullptr) {
+            printf("    [Aliases]        ");
+            for (size_t j = 0; j < MAX_ALIASES && items[0]->aliases[j] != nullptr; j++)
+                printf("%s%s", j > 0 ? ", " : "", items[0]->aliases[j]);
+            puts("");
+        }
+        printf("    [Category]       %s\n", items[0]->category);
+        printf("    [Details]        %s\n", items[0]->details);
 
         return;
     }
 
     const char *last_cat = nullptr;
-    for (size_t i = 0; i < count; i++)
-    {
-        if(!last_cat || strcmp(last_cat, items[i]->category) != 0)
-        {
+    for (size_t i = 0; i < count; i++) {
+
+        if(!last_cat || strcmp(last_cat, items[i]->category) != 0) {
+
             if(last_cat != nullptr)
-            {
                 puts("");
-            }
 
             for (const char *p = items[i]->category; *p; p++)
-            {
                 putchar(toupper((unsigned char) *p));
-            }
+
             puts(":");
 
             last_cat = items[i]->category;
         }
-        printf("    %-8s - %s\n", items[i]->name, items[i]->details);
-    }
+        else 
+            puts("");
 
+        printf("    %-14s %s\n", "[name]", items[i]->name);
+        printf("    %-14s %s\n", "[description]", items[i]->details);
+
+        if (items[i]->aliases[0] != nullptr) {
+            printf("    %-14s ", "[aliases]");
+            for (size_t j = 0; j < MAX_ALIASES && items[i]->aliases[j] != nullptr; j++)
+            {
+                printf("%s%s", j > 0 ? ", " : "", items[i]->aliases[j]);
+            }
+            puts("");
+        }
+    }
 }
