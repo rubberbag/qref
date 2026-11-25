@@ -1,7 +1,7 @@
 VERSION 	:= 0.0.1
 
 CC 			:= gcc
-CFLAGS 	:= -Wall -Wextra -std=c23 -I. -DPROGRAM_VERSION=\"$(VERSION)\"
+CFLAGS 	:= -Wall -Wextra -std=gnu23 -I. -DPROGRAM_VERSION=\"$(VERSION)\"
 
 BUILD_DIR 	:= build
 TARGET  	:= $(BUILD_DIR)/qref
