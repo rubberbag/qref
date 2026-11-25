@@ -7,8 +7,14 @@
 
 #include "qref.h"
 
-#define FNV_OFFEST_BASIS    2166136261u
-#define FNV_PRIME           16777619u      
+constexpr uint32_t FNV_OFFSET_BASIS = 2166136261u;
+constexpr uint32_t FNV_PRIME        = 16777619u;
+
+struct KeyEntry {
+    const char *key;
+    const struct Qref *qref;
+};
+
 /**
  * Compute a 32-bit FNV-la hash for a null-terminated string.
  */
@@ -16,11 +22,10 @@ static uint32_t hash_str_lower(const char *str)
 {
     assert (str != nullptr);
 
-    uint32_t hash = FNV_OFFEST_BASIS;
+    uint32_t hash = FNV_OFFSET_BASIS;
 
-    while (*str)
-    {
-        hash ^= (unsigned char)(*str++);
+    while (*str) {
+        hash ^= (unsigned char)tolower((unsigned char)(*str++));
         hash *= FNV_PRIME;
     }
     
@@ -32,12 +37,9 @@ static uint32_t hash_str_lower(const char *str)
  */
 static bool str_ieq(const char *a, const char *b)
 {
-    while (*a && *b)
-    {
+    while (*a && *b) {
         if ( tolower((unsigned char) *a) != tolower((unsigned char) *b))
-        {
             return false;
-        }
 
         a++;
         b++;
@@ -48,10 +50,8 @@ static bool str_ieq(const char *a, const char *b)
 
 static bool str_matches(const char *a, const char *b, enum CaseMode mode)
 {
-    if(mode == CASE_SENSITIVE)
-    {
+    if (mode == CASE_SENSITIVE)
         return strcmp(a,b) == 0;
-    }
 
     return str_ieq(a,b);
 }
@@ -64,58 +64,54 @@ static bool str_matches(const char *a, const char *b, enum CaseMode mode)
 int lookup_and_print( const char *term, const struct Subcommand *scope)
 {
 
-    if (!term)
-    {
-        fprintf(stderr,"Error: term can not be nullptr");
+    if (!term) {
+        fprintf(stderr,"Error: term cannot be nullptr");
         return EXIT_FAILURE;
     }
 
     size_t total_items = scope ? scope->count :  registry_total_refs();
 
-    if (total_items == 0)
-    {
+    if (total_items == 0) {
         fprintf(stderr, "No entries registered.\n");
         return EXIT_FAILURE;
     }
     
-    size_t  table_size = total_items * 2;
-    const struct Qref *items[total_items];
-    int next_idx[total_items];
+    size_t max_keys = total_items * (1 + MAX_ALIASES);
+    struct KeyEntry entries[max_keys];
+    size_t key_count = 0;
+    
+
+    
+    /* Collect all primary names and aliases in scope */
+    for (const struct Subcommand *cmd = (scope ? scope : registry_head());
+         cmd != nullptr;
+         cmd = (scope ? nullptr : cmd->next))
+    {
+        for (size_t i = 0; i < cmd->count; i++) {
+            const struct Qref *q = &cmd->qrefs[i];
+            entries[key_count++] = (struct KeyEntry){ .key = q->name, .qref = q };
+
+            for (size_t a = 0; a < MAX_ALIASES && q->aliases[a] != nullptr; a++) {
+                entries[key_count++] = (struct KeyEntry){ .key = q->aliases[a], .qref = q };
+            }
+        }
+    }
+
+    
+    size_t  table_size = key_count * 2;
+    int next_idx[key_count];
     int lut[table_size];
 
     memset(next_idx, -1, sizeof(next_idx));
     memset(lut, -1, sizeof(lut));
 
-    /* Collect pointers to all Qref entries in scope */
-    size_t idx = 0;
-    if (scope)
-    {
-        for ( size_t i = 0; i < scope->count; i++)
-        {
-            items[idx++] = &scope->qrefs[i];
-        }
-    }
-    else
-    {
-        for (const struct Subcommand *cmd = registry_head(); cmd != nullptr; cmd = cmd->next)
-        {
-            for (size_t i = 0; i < cmd->count; i++)
-            {
-                items[idx++] = &cmd->qrefs[i];
-            }
-        }
-    }
-    
 
     /* Insert pass: group case-insensitive equivalents, linear-probe lut[] and chain duplicate names via next_idx[] */
-    for (size_t i = 0; i< total_items; i++)
-    {
-        size_t slot = hash_str_lower(items[i]->name) % table_size;
+    for (size_t i = 0; i < key_count; i++) {
+        size_t slot = hash_str_lower(entries[i].key) % table_size;
 
-        while (lut[slot] !=-1)
-        {
-            if ( str_ieq(items[lut[slot]]->name, items[i]->name))
-            {
+        while (lut[slot] !=-1){
+            if ( str_ieq(entries[lut[slot]].key, entries[i].key)) {
                 next_idx[i] = lut[slot];
                 break;
             }
@@ -126,31 +122,40 @@ int lookup_and_print( const char *term, const struct Subcommand *scope)
 
     /* Search pass: probe lut[] for term and walk any chain duplicates */
     size_t slot = hash_str_lower(term) % table_size;
-    while (lut[slot] !=-1)
-    {
+    while (lut[slot] !=-1) {
         int curr = lut[slot];
 
-        if (str_ieq(items[curr]->name, term))
-        { 
+        if (str_ieq(entries[curr].key, term)){ 
             const struct Qref *matches[total_items];
             size_t match_count = 0;
             
-            while(curr != -1)
-            {
-                if(str_matches(items[curr]->name, term, items[curr]->case_mode))
-                {
-                    matches[match_count++] = items[curr];
+            while(curr != -1) {
+                const struct Qref *candidate = entries[curr].qref;
+
+                if(str_matches(entries[curr].key, term, candidate->case_mode)) {
+                    /* Avoid duplicate Qref if an entry somehow lists the same alias twice  */
+                    bool already_added = false;
+                    for (size_t m = 0; m < match_count; m++) {
+                        if (matches[m] == candidate) {
+                            already_added = true;
+                            break;
+                        }
+                    }
+
+                    if (!already_added) {
+                        matches[match_count++] = candidate;
+                    }
                 }
+    
 
                 curr = next_idx[curr];
 
-                if (match_count > 0)
-                {
+                }
+
+                if (match_count > 0) {
                     print_qrefs(matches, match_count, scope ? scope->description: "Global lookup");
 
                     return EXIT_SUCCESS;
-                }
-
             }
         }
 
