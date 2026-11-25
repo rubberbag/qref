@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://gnu.org>.
  */
-
 #ifndef QREF_H
 #define QREF_H
 
