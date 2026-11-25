@@ -1,4 +1,4 @@
-BasedOnSTyle: LLVM
+BasedOnStyle: LLVM
 IndentWidth: 4
 columnLimit: 80
 BreakBeforeBraces: Attach
