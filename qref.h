@@ -9,7 +9,7 @@
 enum CaseMode
 {
     CASE_SENSITIVE = 0,
-    CASE_INSENTIVE = 1
+    CASE_INSENSITIVE = 1
 };
 
 /**
@@ -43,7 +43,7 @@ const struct Subcommand *registry_head(void);
 void print_version(void);
 void print_help(void);
 int lookup_and_print(const char *item, const struct Subcommand *scope);
-void print_qrefs(const struct Qref *const *tems, size_t count, const char *title);
+void print_qrefs(const struct Qref *const *items, size_t count, const char *title);
 
 
 /**
