@@ -1,8 +1,0 @@
-CompileFlags:
-  Add: [-std=gnu23, -Wall, -Wextra, -Wno-missing-field-initializers, -I/home/shell/projects/ref-cli]
-
----
-If:
-  PathMatch: .*\.h$
-CompileFlags:
-  Add: [-xc]
