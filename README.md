@@ -1,6 +1,6 @@
 # qref
 
-A fast, zero-dependency command-line quick reference tool written in C11. Look up technical references, such as ASCII codes, system calls, or memory layouts instantly from your terminal without leaving your workflow.
+A fast, zero-dependency command-line quick reference tool. Look up technical references, such as ASCII codes, system calls, or memory layouts instantly from your terminal without leaving your workflow.
 
 ## Features
 
