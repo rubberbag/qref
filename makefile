@@ -1,4 +1,4 @@
-VERSION 	:= 0.1.0
+VERSION 	:= 0.1.1
 
 CC 			:= gcc
 CFLAGS 		:= -Wall -Wextra -Wno-missing-field-initializers -std=gnu23 -I. -DPROGRAM_VERSION=\"$(VERSION)\"
