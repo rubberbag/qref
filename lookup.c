@@ -25,8 +25,8 @@
 
 #include "qref.h"
 
-constexpr uint32_t FNV_OFFSET_BASIS = 2166136261u;
-constexpr uint32_t FNV_PRIME        = 16777619u;
+#define FNV_OFFSET_BASIS    2166136261u;
+#define FNV_PRIME           16777619u;
 
 struct KeyEntry {
     const char *key;
