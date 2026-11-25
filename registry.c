@@ -23,7 +23,6 @@
 #include "qref.h"
 
 static struct  Subcommand *subcommand_head = nullptr;
-static size_t subcommand_count = 0;
 static size_t total_ref_count  = 0;
 
 
@@ -37,7 +36,6 @@ void register_topic(struct Subcommand *cmd)
 
     cmd->next = subcommand_head;
     subcommand_head = cmd;
-    subcommand_count++;
     total_ref_count += cmd->count;
 }
 
@@ -76,7 +74,7 @@ size_t registry_total_refs(void)
 const struct Subcommand *registry_head(void)
 {
     return subcommand_head;
-};
+}
 
 
 
@@ -88,7 +86,12 @@ const struct Subcommand *registry_head(void)
  */
 void print_version(void)
 {
-    printf("qref v%s © 2026 by Philip Nerison Boadu\n", PROGRAM_VERSION);
+    printf("qref v%s\n"
+           "Copyright (C) 2026 Philip Nerison Boadu\n"
+           "License GPLv3+: GNU GPL version 3 or later <https://gnu.org>\n"
+           "This is free software: you are free to change and redistribute it.\n"
+           "There is NO WARRANTY, to the extent permitted by law.\n",
+           PROGRAM_VERSION);
 }
 
 
@@ -160,7 +163,7 @@ void print_qrefs(const struct Qref *const *items, size_t count, const char *titl
             last_cat = items[i]->category;
         }
         else 
-            puts("");
+            puts(""); 
 
         printf("    %-14s %s\n", "[name]", items[i]->name);
         printf("    %-14s %s\n", "[description]", items[i]->details);
