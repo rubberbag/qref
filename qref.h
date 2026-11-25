@@ -20,7 +20,7 @@
 
 #include <stddef.h>
 
-constexpr size_t MAX_ALIASES = 4;
+#define MAX_ALIASES  4
 
 /**
  * Controls whether an individual entry matches case-sensitively or not
