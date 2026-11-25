@@ -3,6 +3,8 @@
 
 #include <stddef.h>
 
+constexpr size_t MAX_ALIASES = 4;
+
 /**
  * Controls whether an individual entry matches case-sensitively or not
  */
@@ -17,10 +19,11 @@ enum CaseMode
  */
 struct Qref
 {
-    const char *name;  
+    const char *name; 
     const char *category; 
     const char *details;
-    enum CaseMode case_mode; 
+    enum CaseMode case_mode;
+    const char *aliases[MAX_ALIASES];  
 };
 
 /**
