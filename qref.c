@@ -29,7 +29,7 @@ const char *term = nullptr;
 int main(int argc, char ** argv)
 {
     if (argc < 2) {
-        print_version();
+        print_help();
         return EXIT_SUCCESS; 
     }
     

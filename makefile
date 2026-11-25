@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-VERSION 	:= 0.1.1
+VERSION 	:= 0.1.2
 
 CC 			:= gcc
 CFLAGS 		:= -Wall -Wextra -Wpedantic -Wno-missing-field-initializers -std=gnu23 -I. -DPROGRAM_VERSION=\"$(VERSION)\"
